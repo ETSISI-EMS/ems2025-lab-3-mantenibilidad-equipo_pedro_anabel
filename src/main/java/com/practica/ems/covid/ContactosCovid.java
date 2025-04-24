@@ -118,28 +118,7 @@ public class ContactosCovid {
 			 */
 			while ((data = br.readLine()) != null) {
 				datas = dividirEntrada(data.trim());
-				for (String linea : datas) {
-					String datos[] = this.dividirLineaData(linea);
-					if (!datos[0].equals("PERSONA") && !datos[0].equals("LOCALIZACION")) {
-						throw new EmsInvalidTypeException();
-					}
-					if (datos[0].equals("PERSONA")) {
-						if (datos.length != Constantes.MAX_DATOS_PERSONA) {
-							throw new EmsInvalidNumberOfDataException("El número de datos para PERSONA es menor de 8");
-						}
-						this.poblacion.addPersona(this.crearPersona(datos));
-					}
-					if (datos[0].equals("LOCALIZACION")) {
-						if (datos.length != Constantes.MAX_DATOS_LOCALIZACION) {
-							throw new EmsInvalidNumberOfDataException(
-									"El número de datos para LOCALIZACION es menor de 6" );
-						}
-						PosicionPersona pp = this.crearPosicionPersona(datos);
-						this.localizacion.addLocalizacion(pp);
-						this.listaContactos.insertarNodoTemporal(pp);
-					}
-				}
-
+				comprobarPersonaLocalizacion(datas);
 			}
 
 		} catch (Exception e) {
@@ -155,6 +134,33 @@ public class ContactosCovid {
 			} catch (Exception e2) {
 				e2.printStackTrace();
 			}
+		}
+	}
+	public void comprobarPersonaLocalizacion(String datas[]){
+		try {
+			for (String linea : datas) {
+				String datos[] = this.dividirLineaData(linea);
+				if (!datos[0].equals("PERSONA") && !datos[0].equals("LOCALIZACION")) {
+					throw new EmsInvalidTypeException();
+				}
+				if (datos[0].equals("PERSONA")) {
+					if (datos.length != Constantes.MAX_DATOS_PERSONA) {
+						throw new EmsInvalidNumberOfDataException("El número de datos para PERSONA es menor de 8");
+					}
+					this.poblacion.addPersona(this.crearPersona(datos));
+				}
+				if (datos[0].equals("LOCALIZACION")) {
+					if (datos.length != Constantes.MAX_DATOS_LOCALIZACION) {
+						throw new EmsInvalidNumberOfDataException(
+								"El número de datos para LOCALIZACION es menor de 6");
+					}
+					PosicionPersona pp = this.crearPosicionPersona(datos);
+					this.localizacion.addLocalizacion(pp);
+					this.listaContactos.insertarNodoTemporal(pp);
+				}
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
 	}
 	public int findPersona(String documento) throws EmsPersonNotFoundException {
